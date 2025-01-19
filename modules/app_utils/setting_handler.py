@@ -1,9 +1,10 @@
+import pandas as pd
 import streamlit as st
 
 import json
 
 # それぞれのページで共通レイアウト・設定を作る
-def set_common_setting(has_link_in_page=False):
+def set_common_setting(has_link_in_page=True):
     # 共通の設定
     st.set_page_config(
         page_title="LAMBDA Melting",
@@ -14,18 +15,16 @@ def set_common_setting(has_link_in_page=False):
     st.set_option('client.showSidebarNavigation', False) # デフォルトのサイドバー表示を一旦無効にする。自分でlabelをつけるため。
     with st.sidebar:
         st.page_link("home.py", label="About app", icon="🏠")
-        st.page_link("pages/run_selector.py", label="Run Selector", icon="💥")
-        st.page_link("pages/hdf_viewer.py", label="HDF Viewer", icon="👀")
+        st.page_link("pages/run_selector.py", label="Run Selector", icon="📂")
+        # st.page_link("pages/hdf_viewer.py", label="HDF Viewer", icon="👀")
         # st.page_link("pages/calc_by_2color.py", label="2 Color Pyrometer", icon="🎨")
         # ページ内のリンクが渡された場合、それを表示する
         if has_link_in_page:
             st.divider()
             st.sidebar.markdown("ページ内リンク")
 
-#
+# 設定をjsonで管理
 class Setting:
-    # クラス固有の変数
-
     PATH_TO_JSON = 'settings/run_selector.json'
 
     def __init__(self):
@@ -49,20 +48,43 @@ class Setting:
             json.dump(setting_json, f, ensure_ascii=False)
             print(f"{self.PATH_TO_JSON} の {key} に {value} が追加されました。")
 
-    def update_read_radiation_path(self, read_path):
-        self._update_setting(key='read_radiation_path', value=read_path)
+    def update_setting(self, key, value):
+        self._update_setting(key=key, value=value)
 
-    def update_calib_setting_path(self, calib_path):
-        self._update_setting(key='calib_setting_path', value=calib_path)
 
-    def update_save_calibrated_path(self, save_path):
-        self._update_setting(key='save_calibrated_path', value=save_path)
+class RunListMaster:
+    PATH_TO_RUN_LIST = 'ref_data/run_list.xlsx'
 
-    def update_read_calibrated_path(self, save_path):
-        self._update_setting(key='read_calibrated_path', value=save_path)
+    def __init__(self):
+        self.master = pd.read_excel(self.PATH_TO_RUN_LIST)
 
-    def update_save_fit_dist_path(self, save_path):
-        self._update_setting(key='save_fit_dist_path', value=save_path)
+    def find_run_year_month(self, run_name):
+        """
+        指定された run_name に対応する year と month を返す。
+        """
+        # run_name でフィルタリング
+        filtered = self.master[self.master['run_name'] == run_name]
+        if not filtered.empty:
+            year = filtered['year'].iloc[0]
+            month = filtered['month'].iloc[0] if 'month' in filtered.columns else None
+            return year, month
+        else:
+            return None, None
 
-    def update_save_2color_dist_path(self, save_path):
-        self._update_setting(key='save_2color_dist_path', value=save_path)
+class PoniMaster:
+    PATH_TO_PONI_MASTER = 'ref_data/poni_period.xlsx'
+
+    def __init__(self):
+        self.master = pd.read_excel(self.PATH_TO_PONI_MASTER)
+
+    def find_poni_year_month(self, year, month):
+        """
+        指定された year と month に一致する PONI 校正フォルダを返す。
+        """
+        filtered = self.master[(self.master['year'] == year) & (self.master['month'] == month)]
+        if not filtered.empty:
+            return filtered['poni'].iloc[0]
+        else:
+            return None
+
+
