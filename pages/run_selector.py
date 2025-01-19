@@ -57,12 +57,12 @@ with cell_col:
         path=os.path.join(data_root_path, selected_sample),
         excludes=['.jpg']
     )
-    cells.sort(reverse=True) # 気分なのでリバースじゃなくていい
+    cells.sort()
     selected_cell = st.selectbox(label='セル', options=cells)
 # run
 with run_col:
     runs = get_files_list(path=os.path.join(data_root_path, selected_sample, selected_cell))
-    runs.sort(reverse=True)
+    runs.sort()
     selected_run = st.selectbox(label='Run', options=runs)
 # 選択されていないものがあれば止める
 if any(x == [] for x in [selected_sample, selected_cell, selected_run]):
@@ -72,10 +72,14 @@ path_to_run = os.path.join(data_root_path, selected_sample, selected_cell, selec
 run_name = "_".join([selected_cell, selected_run]) # OIbDia08_2ndみたいな
 
 # それぞれのファイル名を辞書にする
-if os.listdir(path_to_run) is not []:
-    T_dist_file = get_files_list(path=path_to_run, includes=['dist.hdf'])[0]
-    raw_radiation_file = get_files_list(path=path_to_run, includes=['.spe'])[0]
-    xrd_file = get_files_list(path=path_to_run, includes=['.nxs'])[0]
+try:
+    if os.listdir(path_to_run) is not []:
+        T_dist_file = get_files_list(path=path_to_run, includes=['dist.hdf'])[0]
+        raw_radiation_file = get_files_list(path=path_to_run, includes=['.spe'])[0]
+        xrd_file = get_files_list(path=path_to_run, includes=['.nxs'])[0]
+except:
+    st.error('エラー')
+    st.stop()
 
 # run_nameをもとに、Excelから情報を取得
 run_master = RunListMaster()
