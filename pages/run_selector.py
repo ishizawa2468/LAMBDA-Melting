@@ -1,7 +1,4 @@
 import os
-from asyncio import set_event_loop
-
-import pandas as pd
 import streamlit as st
 
 from modules.app_utils import setting_handler
@@ -89,10 +86,16 @@ print(f"Run: {run_name}, Year: {year}, Month: {month}")
 if year and month:
     poni_file = poni_master.find_poni_year_month(year, month)
     print(f"PONI file: {poni_file}")
+else:
+    st.warning(f'Runが見つかりませんでした。{run_name} が run_list.xlsx に記載されていることを確認してください。')
+    st.stop()
+
+# 上書きするかどうかをここで設定
+is_overwritten = st.checkbox(label='処理データの上書きを行う (チェックを外すと、解析済みの際上書きされません)', value=True)
 
 run_files = {
     'Temperature': {
-        'raw_raidation': raw_radiation_file,
+        'raw_radiation': raw_radiation_file,
         'dist': T_dist_file,
     },
     'XRD': {
@@ -101,11 +104,13 @@ run_files = {
     }
 }
 
+
 # 保存
 if st.button('Runを設定', type='primary'):
     setting.update_setting(key='current_run', value=run_name)
     setting.update_setting(key='path_to_run_files', value=path_to_run)
     setting.update_setting(key='selected_files', value=run_files)
+    setting.update_setting(key='is_overwritten', value=is_overwritten)
     setting = setting_handler.Setting()
 
 # 選択されたRun情報を表示
@@ -113,3 +118,22 @@ st.markdown('') # 表示上のスペース確保
 st.markdown('##### Runのファイル・情報を表示')
 st.write(run_files)
 
+# 保存先を選択
+display_handler.display_title_with_link(
+    title="3. 保存フォルダを選択",
+    link_title="3. 保存フォルダを選択",
+    tag="select_save_folder"
+)
+
+# 設定インスタンスを作成しておく。これを通してフォルダパスを読み込んだり保存したりする
+setting = setting_handler.Setting()
+
+st.markdown('') # 表示上のスペース確保
+st.markdown('##### 保存フォルダを設定')
+save_root_path = st.text_input(
+    label='フォルダまでのfull path',
+    value=setting.setting_json['save_root_path']
+)
+if st.button('保存先を更新'):
+    setting.update_setting(key='save_root_path', value=save_root_path)
+    setting = setting_handler.Setting()

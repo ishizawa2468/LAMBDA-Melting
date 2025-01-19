@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import streamlit as st
 
@@ -56,7 +58,11 @@ class RunListMaster:
     PATH_TO_RUN_LIST = 'ref_data/run_list.xlsx'
 
     def __init__(self):
-        self.master = pd.read_excel(self.PATH_TO_RUN_LIST)
+        try:
+            self.master = pd.read_excel(self.PATH_TO_RUN_LIST)
+        except FileNotFoundError:
+            print(f'File {self.PATH_TO_RUN_LIST} not found.')
+            pass
 
     def find_run_year_month(self, run_name):
         """
@@ -70,6 +76,33 @@ class RunListMaster:
             return year, month
         else:
             return None, None
+
+    def use_from_notebook(self, repository_root):
+        self.path_from_notebook = os.path.join(repository_root, self.PATH_TO_RUN_LIST)
+        self.master = pd.read_excel(self.path_from_notebook)
+        print(f'{self.path_from_notebook} にパスが変更され、Excelファイルが読み込まれました。')
+
+    def update_adopt_side(self, run_name, new_adopted_steram):
+        """
+        指定された run_name の adopt_side を更新する。
+        更新が成功した場合は True を返す。
+        """
+        # run_name で該当行を探す
+        index = self.master[self.master['run_name'] == run_name].index
+
+        if not index.empty:
+            self.master['adopted_stream'] = self.master['adopted_stream'].astype(object)
+            self.master.loc[index, 'adopted_stream'] = new_adopted_steram
+            return True
+        else:
+            return False
+
+    def save_to_excel(self):
+        """
+        現在のデータを Excel ファイルに保存する。
+        """
+        self.master.to_excel(self.path_from_notebook, index=False)
+        print('Excelファイルの更新成功')
 
 class PoniMaster:
     PATH_TO_PONI_MASTER = 'ref_data/poni_period.xlsx'
