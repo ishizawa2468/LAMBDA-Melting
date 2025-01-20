@@ -22,6 +22,11 @@ def calc_P_KCl_B2(V, T):
     P = P_no_T + P_therm # 合計
     return P
 
+def calc_thermal_P_KCl_B2(T):
+    akt = 0.00224
+    P_therm = T * akt # 温度由来
+    return P_therm
+
 # cubic-diamond
 def calc_P_c_diamond(V, T):
     pass
