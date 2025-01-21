@@ -1,0 +1,32 @@
+﻿year,author,P,P_error,T,T_error
+1963,Vereschagin,0.01,0,4650,0
+1968,Vereschagin,0.01,0,4040,0
+1973,Leider et al,0.01,0,4765,0
+1974,Gathers et al.,0.3,0.1,4500,500
+1978, Whittaker,0.00006,0.00004,3800,0
+1981,Kirillin et al.,0.0001,0,5000,0
+1984,Buchnev et al.,0.0001,0,4890,0
+1985,Kirillin et al,0.0102,0,5000,200
+1987,Senchenko,0.0135,0.0085,4700,80
+1987,Buchnev et al.,0.0001,0,4900,0
+1988,Heremans et al,0.0001,0,4450,0
+1990,Cezairliyan and Miiller,0.00017,0.00003,4530,150
+1990,Baitin et al.,0.15,0.05,5080,70
+1992,Ronchi et al,0.00012,0,4100,100
+1993,Pottlacher et al.,0.3,0,4900,200
+1994,Togaya et al,0.01,0,4600,0
+1997,Togaya,1.4,0,4650,0
+1997,Togaya,5.6,0,4790,0
+1997,Togaya,9.4,0,4640,0
+1997,Asinovskiy et al.,0.0025,0,3700,150
+1998,Musella et al.,0.14,0.11,4800,150
+1998,Korobenko et al,0.0001,0,4800,200
+2000,Basharin et al,0.015,0,4750,150
+2001,Korobenko et al.,0.1,0,4800,200
+2001,Kerley et al.,0.017,0,4660,0
+2002,Asinovskiy et al,0.0001,0,4000,0
+2002,Asinovskiy et al,0.0001,0,3750,150
+2002,Joseph et al.,0.01,0,4765,200
+2002,Joseph et al.,0.01,0,4765,200
+2003,Savvatimskii,0.01,0,4800,200
+2004,Basharin et al.,0.015,0,4800,100
